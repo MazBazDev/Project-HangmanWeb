@@ -22,6 +22,11 @@ body {
 .full-height {
     height: 100%;
 }
+
+.full-width {
+	width: 100%;
+}
+
 nav {
 	display: flex;
 	justify-content: space-around;
@@ -50,8 +55,11 @@ nav {
 	margin: auto;
 	color: #fff;
 	background-color: #000;
-	border-radius: 2px;
 	padding: 50px;
+}
+
+.box {
+	border-radius: 2px;
 	border: 1px solid #2e2e2e;
 	box-shadow: 0 0 40px 5px rgb(255 255 255 / 15%);
 }
@@ -90,13 +98,13 @@ nav {
 	text-decoration: underline;
 }
 
-a > span {
+.hoverable > span {
 	display: inline-block;
 	position: relative;
 	line-height: 27px;
 }
 
-a > span::after {
+.hoverable > span::after {
 	content: "";
 	position: absolute;
 	width: 100%;
@@ -109,9 +117,14 @@ a > span::after {
 	transition: transform 0.25s ease-out;
 }
 
-a > span:hover::after {
+.hoverable > span:hover::after {
 	transform: scaleX(1);
 	transform-origin: bottom left;
+}
+
+a:hover {
+	color: #f89102!important;
+	transition: transform 0.25s ease-out;
 }
 
 @media (min-width: 768px) {
@@ -173,9 +186,47 @@ a > span:hover::after {
 	font-size: 12px;
 }
 
-.card {
-    border-radius: 2px;
-	padding: 50px;
-	border: 1px solid #2e2e2e;
-	box-shadow: 0 0 40px 5px rgb(255 255 255 / 15%);
+/* Hang Man */
+.hangman {
+	fill: none;
+	stroke: #6a6a6a;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-miterlimit: 10;
+	transition: 0.25s;
+}
+.selected {
+	stroke: #f89102;
+	display: grid;
+}
+
+.letters {
+	text-transform: uppercase;
+	color: #fff;
+    letter-spacing: 1rem;
+    font-size: 3rem;
+	overflow-wrap: break-word;
+}
+.used {
+    font-size: 1.5rem!important;
+}
+
+hr {
+	color: #fff!important;
+}
+
+.playBtn {
+	margin-top: 1rem;
+	text-decoration: none;
+	font-size: 1.25rem;
+	padding: 1rem;
+	font-weight: 400;
+	background: #1f1f1f;
+	color: #fff;
+	border-radius: 3px;
+	border-width: 0;
+	transition: all 0.4s ease-in-out;
+}
+.playForm > input {
+
 }

@@ -5,13 +5,6 @@ import (
 	"net/http"
 )
 
-type Student struct {
-	Name  string
-	Age   string
-	Quote string
-	Hobby string
-}
-
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Welcome to Hangman Web!")

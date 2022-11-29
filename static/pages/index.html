@@ -17,8 +17,9 @@
             <span class="ph">HUB</span>
         </div>
     </nav>
-    <div class="container d-flex full-height">
-        <div class="login-modal my-auto">
+
+    <!-- <div class="container d-flex full-height">
+        <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
                 <span class="ph">HUB</span>
@@ -27,14 +28,14 @@
             <h4>Before playing you need to be logged !</h4>
 
             <div class="modal-btn-box">
-                <a class="btn-grey" href=""><span>Login</span></a>
-                <a class="btn-grey" href=""><span>Register</span></a>
+                <a class="btn-grey hoverable" href=""><span>Login</span></a>
+                <a class="btn-grey hoverable" href=""><span>Register</span></a>
             </div>
        </div>
-    </div>
+    </div> -->
 
-    <div class="container d-flex full-height">
-        <div class="login-modal">
+    <!-- <div class="container d-flex full-height">
+        <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
                 <span class="ph">HUB</span>
@@ -53,15 +54,15 @@
                     </div>
                     <span class="error">Error</span>
                     <div class="d-grid">
-                        <button type="submit" href="" class="btn-grey">Login</button>
+                        <button type="submit" href="" class="btn-grey hoverable">Login</button>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <div class="container d-flex full-height">
-        <div class="login-modal">
+    <!-- <div class="container d-flex full-height">
+        <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
                 <span class="ph">HUB</span>
@@ -88,9 +89,51 @@
                     </div>
                     <span class="error">Error</span>
                     <div class="d-grid">
-                        <button type="submit" href="" class="btn-grey">Register</button>
+                        <button type="submit" href="" class="btn-grey hoverable">Register</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>  -->
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <div class="box text-center p-3">
+                    <p class="letters">AZE_TY</p>
+                    <hr>
+                    <h4 class="text-white">Enter a letter or a word</h4>
+                    <form action="" class="my-2 d-block playForm">
+                        <div class="">
+                            <input type="text" class="box" min="1" required>
+                        </div>
+                        <button class="playBtn hoverable" type="submit"><span>Essayer</span></button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="box p-3 mb-3 text-center">
+                    <h3 class="text-white">Used letters</h3>
+                    <hr>
+                    <p class="letters used">ABCDEDDSDQD</p>
+                </div>
+                <div class="box p-3 mb-3">
+                    <h3 class="text-center text-white">Attemps left : 8</h3>
+                    <hr>
+                    <svg class="hangman" viewBox="0 0 96 96">
+                        <line class="" x1="62" y1="70" x2="56" y2="56"></line>
+                        <line class="" x1="50" y1="70" x2="56" y2="56"></line>
+                        <line class="" x1="68" y1="46" x2="56" y2="40"></line>
+                        <line class="" x1="44" y1="46" x2="56" y2="40"></line>
+                        <line class="" x1="56" y1="40" x2="56" y2="56"></line>
+                        <circle class="" cx="56" cy="34" r="6"></circle>
+                        <line class="" x1="56" y1="16" x2="56" y2="28"></line>
+                        <line class="" x1="24" y1="24" x2="32" y2="16"></line>
+                        <line class="" x1="21" y1="16" x2="60" y2="16"></line>
+                        <line class="selected" x1="24" y1="80" x2="24" y2="16"></line>
+                        <line class="selected" x1="16" y1="80" x2="32" y2="80"></line>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
