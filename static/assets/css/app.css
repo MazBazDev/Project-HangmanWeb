@@ -1,5 +1,10 @@
-html {
+*,
+*::before,
+*::after {
 	box-sizing: border-box;
+}
+
+html {
 	scroll-behavior: smooth;
 }
 
@@ -7,11 +12,27 @@ body {
 	height: 100vh;
 	width: 100vw;
 	margin: 0;
-	background-color: black!important;
+	background-color: black !important;
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-.flex {
+nav {
+	display: flex;
+	justify-content: space-around;
+	background-color: #1b1b1b;
+	padding: 5px;
+}
+
+hr {
+	color: #fff !important;
+}
+
+a:hover {
+	color: #f89102 !important;
+	transition: transform 0.25s ease-out;
+}
+
+.d-flex {
 	display: flex;
 }
 
@@ -20,18 +41,15 @@ body {
 }
 
 .full-height {
-    height: 100%;
+	height: 100%;
 }
 
 .full-width {
 	width: 100%;
 }
 
-nav {
-	display: flex;
-	justify-content: space-around;
-	background-color: #1b1b1b;
-	padding: 5px;
+.text-white {
+	color: #fff;
 }
 
 .logo {
@@ -50,7 +68,7 @@ nav {
 }
 
 .login-modal {
-    max-width: 900px;
+	max-width: 900px;
 	text-align: center;
 	margin: auto;
 	color: #fff;
@@ -122,29 +140,6 @@ nav {
 	transform-origin: bottom left;
 }
 
-a:hover {
-	color: #f89102!important;
-	transition: transform 0.25s ease-out;
-}
-
-@media (min-width: 768px) {
-	.container {
-		width: 750px;
-	}
-}
-@media (min-width: 992px) {
-	.container {
-		width: 970px;
-	}
-}
-@media (min-width: 1200px) {
-	.container {
-		width: 1170px;
-	}
-}
-
-/* Login kit  */
-
 .login-box h2 {
 	margin: 0 0 30px;
 	padding: 0;
@@ -167,6 +162,7 @@ a:hover {
 	outline: none;
 	background: transparent;
 }
+
 .login-box .user-box label {
 	position: absolute;
 	top: 0;
@@ -186,7 +182,6 @@ a:hover {
 	font-size: 12px;
 }
 
-/* Hang Man */
 .hangman {
 	fill: none;
 	stroke: #6a6a6a;
@@ -203,16 +198,13 @@ a:hover {
 .letters {
 	text-transform: uppercase;
 	color: #fff;
-    letter-spacing: 1rem;
-    font-size: 3rem;
+	letter-spacing: 1rem;
+	font-size: 3rem;
 	overflow-wrap: break-word;
 }
-.used {
-    font-size: 1.5rem!important;
-}
 
-hr {
-	color: #fff!important;
+.used {
+	font-size: 1.5rem !important;
 }
 
 .playBtn {
@@ -227,6 +219,111 @@ hr {
 	border-width: 0;
 	transition: all 0.4s ease-in-out;
 }
-.playForm > input {
 
+.playForm > input {
+	text-align: center;
+	border-radius: 5px;
+	width: 100%;
+	border: 1px solid #2e2e2e;
+	box-shadow: 0 0 20px 6px rgb(255 255 255 / 26%);
+	font-size: 28px;
+	background-color: #ccc;
+	color: black;
+}
+
+.playForm > input::placeholder {
+	color: rgb(62, 62, 62);
+}
+
+.playForm > input:focus-visible {
+	outline-color: #ff9000;
+}
+
+.translate:hover {
+	transition: all 0.3s ease-in-out;
+	transform: translate(0, -4px);
+	box-shadow: 0 0 20px 6px rgb(255 255 255 / 26%);
+}
+
+.my-2 {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+	margin-bottom: 1rem;
+}
+
+.p-3 {
+	padding: 1rem;
+}
+
+.text-center {
+	text-align: center;
+}
+
+.container {
+	width: 100%;
+	padding-right: calc(1.5rem * 0.5);
+	padding-left: calc(1.5rem * 0.5);
+	margin-right: auto;
+	margin-left: auto;
+}
+
+@media (min-width: 576px) {
+	.container {
+		max-width: 540px;
+	}
+}
+
+@media (min-width: 768px) {
+	.container {
+		max-width: 720px;
+	}
+}
+
+@media (min-width: 992px) {
+	.container {
+		max-width: 960px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.container {
+		max-width: 1140px;
+	}
+}
+
+@media (min-width: 1400px) {
+	.container {
+		max-width: 1320px;
+	}
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 3rem;
+	margin-right: calc(-0.5 * 1.5rem);
+	margin-left: calc(-0.5 * 1.5rem);
+}
+.row > * {
+	flex-shrink: 0;
+	width: 100%;
+	max-width: 100%;
+	padding-right: calc(1.5rem * 0.5);
+	padding-left: calc(1.5rem * 0.5);
+	margin-top: 0;
+}
+
+@media (min-width: 768px) {
+	.col-md-4 {
+		flex: 0 0 auto;
+		width: 33.33333333%;
+	}
+
+	.col-md-8 {
+		flex: 0 0 auto;
+		width: 66.66666667%;
+	}
 }

@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>HangMan | Web</title>
     <link rel="stylesheet" href="/static/assets/css/app.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 
 <body>
@@ -18,7 +17,8 @@
         </div>
     </nav>
 
-    <!-- <div class="container d-flex full-height">
+
+    <div class="container d-flex full-height">
         <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
@@ -31,10 +31,13 @@
                 <a class="btn-grey hoverable" href=""><span>Login</span></a>
                 <a class="btn-grey hoverable" href=""><span>Register</span></a>
             </div>
-       </div>
-    </div> -->
+            <div class="d-grid">
+                <a href="" class="btn-grey hoverable">Statistics</a>
+            </div>
+        </div>
+    </div>
 
-    <!-- <div class="container d-flex full-height">
+    <div class="container d-flex full-height">
         <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
@@ -59,9 +62,9 @@
                 </form>
             </div>
         </div>
-    </div> -->
+    </div>
 
-    <!-- <div class="container d-flex full-height">
+    <div class="container d-flex full-height">
         <div class="login-modal box">
             <div class="logo">
                 <span>HANG</span>
@@ -94,7 +97,8 @@
                 </form>
             </div>
         </div>
-    </div>  -->
+    </div>
+
 
     <div class="container mt-5">
         <div class="row">
@@ -102,23 +106,21 @@
                 <div class="box text-center p-3">
                     <p class="letters">AZE_TY</p>
                     <hr>
-                    <h4 class="text-white">Enter a letter or a word</h4>
-                    <form action="" class="my-2 d-block playForm">
-                        <div class="">
-                            <input type="text" class="box" min="1" required>
-                        </div>
-                        <button class="playBtn hoverable" type="submit"><span>Essayer</span></button>
+                    <h4 class="text-white"></h4>
+                    <form action="" class="my-2 d-grid playForm">
+                        <input type="text" class="box" min="1" required autofocus placeholder="Type a word or letter">
+                        <button class="playBtn hoverable translate" type="submit"><span>Try</span></button>
                     </form>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="box p-3 mb-3 text-center">
-                    <h3 class="text-white">Used letters</h3>
+                    <h2 class="text-white">Used letters</h2>
                     <hr>
                     <p class="letters used">ABCDEDDSDQD</p>
                 </div>
                 <div class="box p-3 mb-3">
-                    <h3 class="text-center text-white">Attemps left : 8</h3>
+                    <h2 class="text-center text-white">Attemps left : 8</h2>
                     <hr>
                     <svg class="hangman" viewBox="0 0 96 96">
                         <line class="" x1="62" y1="70" x2="56" y2="56"></line>
@@ -138,4 +140,5 @@
         </div>
     </div>
 </body>
+
 </html>

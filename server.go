@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, request *http.Request) {
 		fmt.Fprint(w, "Welcome to Hangman Web!")
 	})
 
