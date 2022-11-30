@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type sessionData struct {
@@ -66,15 +68,6 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func PasswordCheck(w http.ResponseWriter, request *http.Request) bool {
-	if request.FormValue("password") != request.FormValue("password-confirm") {
-		session.Error = "Passwords don't match"
-		http.Redirect(w, request, "/register", http.StatusSeeOther)
-		return false
-	}
-	return true
-}
-
 func RegisterHasAccount(w http.ResponseWriter, request *http.Request) bool {
 	file, err := os.Open("data/accounts.csv")
 	if err != nil {
@@ -94,10 +87,19 @@ func RegisterHasAccount(w http.ResponseWriter, request *http.Request) bool {
 	return false
 }
 
+func PasswordCheck(w http.ResponseWriter, request *http.Request) bool {
+	if request.FormValue("password") != request.FormValue("password-confirm") {
+		session.Error = "Passwords don't match"
+		http.Redirect(w, request, "/register", http.StatusSeeOther)
+		return false
+	}
+	return true
+}
+
 func Register(w http.ResponseWriter, request *http.Request) {
 	if PasswordCheck(w, request) && !RegisterHasAccount(w, request) {
 		data := [][]string{
-			{request.FormValue("name"), request.FormValue("email"), request.FormValue("password")},
+			{request.FormValue("name"), request.FormValue("email"), HashPassword(request.FormValue("password"))},
 		}
 
 		//create a file
@@ -125,6 +127,21 @@ func Register(w http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func HashPassword(password string) string {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return string(bytes)
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}
+
 func Login(w http.ResponseWriter, request *http.Request) {
 	file, err := os.Open("data/accounts.csv")
 	if err != nil {
@@ -134,7 +151,7 @@ func Login(w http.ResponseWriter, request *http.Request) {
 	records, _ := reader.ReadAll()
 
 	for _, line := range records {
-		if line[1] == request.FormValue("email") && line[2] == request.FormValue("password") {
+		if line[1] == request.FormValue("email") && CheckPasswordHash(request.FormValue("password"), line[2]) {
 			session = sessionData{
 				Logged:   true,
 				Usermane: line[0],
