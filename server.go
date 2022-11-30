@@ -65,6 +65,8 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			}
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
+	default:
+		template.Must(template.ParseFiles("static/pages/error.html")).Execute(w, session)
 	}
 }
 
