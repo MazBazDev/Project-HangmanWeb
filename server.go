@@ -16,16 +16,8 @@ type sessionData struct {
 	Error    string
 }
 
-var session = sessionData{
-	Logged:   true,
-	Usermane: "MazBaz",
-	Email:    "mrlog42@gmail.com",
-	Error:    "",
-}
+var session = sessionData{}
 
-//	if !session.logged {
-//		http.Redirect(w, request, "https://freshman.tech", http.StatusSeeOther)
-//	}
 func main() {
 	http.HandleFunc("/", Routing)
 
@@ -39,14 +31,24 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 	case "/":
 		template.Must(template.ParseFiles("static/pages/index.html")).Execute(w, session)
 	case "/login":
-		if request.Method == "GET" {
-			template.Must(template.ParseFiles("static/pages/login.html")).Execute(w, session)
+		if session.Logged {
+			http.Redirect(w, request, "/", http.StatusSeeOther)
+		} else {
+			if request.Method == "GET" {
+				template.Must(template.ParseFiles("static/pages/login.html")).Execute(w, session)
+			} else if request.Method == "POST" {
+				Login(w, request)
+			}
 		}
 	case "/register":
-		if request.Method == "GET" {
-			template.Must(template.ParseFiles("static/pages/register.html")).Execute(w, session)
-		} else if request.Method == "POST" {
-			Register(w, request)
+		if session.Logged {
+			http.Redirect(w, request, "/", http.StatusSeeOther)
+		} else {
+			if request.Method == "GET" {
+				template.Must(template.ParseFiles("static/pages/register.html")).Execute(w, session)
+			} else if request.Method == "POST" {
+				Register(w, request)
+			}
 		}
 	case "/stats":
 		template.Must(template.ParseFiles("static/pages/stats.html")).Execute(w, session)
@@ -54,11 +56,13 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 		template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
-			session.Logged = false
+			session = sessionData{
+				Logged:   false,
+				Usermane: "",
+				Email:    "",
+			}
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
-	default:
-		session.Error = ""
 	}
 }
 
@@ -79,8 +83,8 @@ func RegisterHasAccount(w http.ResponseWriter, request *http.Request) bool {
 	reader := csv.NewReader(file)
 	records, _ := reader.ReadAll()
 
-	for _, v := range records {
-		if v[1] == request.FormValue("email") {
+	for _, line := range records {
+		if line[1] == request.FormValue("email") {
 			session.Error = "You already have an account !"
 			http.Redirect(w, request, "/register", http.StatusSeeOther)
 			return true
@@ -97,7 +101,7 @@ func Register(w http.ResponseWriter, request *http.Request) {
 		}
 
 		//create a file
-		csvFile, err := os.Create("data/accounts.csv")
+		csvFile, err := os.OpenFile("data/accounts.csv", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 
 		if err != nil {
 			log.Fatalf("Failed to create file,: %", err)
@@ -107,6 +111,7 @@ func Register(w http.ResponseWriter, request *http.Request) {
 		for _, value := range data {
 			csvWriter.Write(value)
 		}
+
 		csvWriter.Flush()
 		csvFile.Close()
 
@@ -117,5 +122,30 @@ func Register(w http.ResponseWriter, request *http.Request) {
 		}
 
 		http.Redirect(w, request, "/", http.StatusSeeOther)
+	}
+}
+
+func Login(w http.ResponseWriter, request *http.Request) {
+	file, err := os.Open("data/accounts.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
+	reader := csv.NewReader(file)
+	records, _ := reader.ReadAll()
+
+	for _, line := range records {
+		if line[1] == request.FormValue("email") && line[2] == request.FormValue("password") {
+			session = sessionData{
+				Logged:   true,
+				Usermane: line[0],
+				Email:    line[1],
+			}
+			http.Redirect(w, request, "/", http.StatusSeeOther)
+		}
+	}
+
+	if !session.Logged {
+		session.Error = "Bad credentials, retry or create an account"
+		http.Redirect(w, request, "/login", http.StatusSeeOther)
 	}
 }

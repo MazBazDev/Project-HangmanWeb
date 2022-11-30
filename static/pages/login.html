@@ -27,16 +27,16 @@
             <h1>Login</h1>
             <h4>All your data is stored in France for your security and anonymity !</h4>
             <div class="login-box">
-                <form>
+                <form action="/login" method="POST">
                     <div class="user-box">
                         <input type="email" name="email" required>
                         <label>Email</label>
                     </div>
                     <div class="user-box">
-                        <input type="password" name="pasword" required>
+                        <input type="password" name="password" required>
                         <label>Password</label>
                     </div>
-                    <span class="error">Error</span>
+                    <span class="error">{{.Error}}</span>
                     <div class="d-grid">
                         <button type="submit" href="" class="btn-grey hoverable">Login</button>
                     </div>
