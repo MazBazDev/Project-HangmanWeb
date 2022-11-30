@@ -17,26 +17,45 @@
         </div>
     </nav>
 
-
-    <div class="container d-flex full-height">
-        <div class="login-modal box">
-            <div class="logo">
-                <span>HANG</span>
-                <span class="ph">HUB</span>
-            </div>
-            <h1>Are you ready to play ?</h1>
-            <h4>Before playing you need to be logged !</h4>
-
-            <div class="modal-btn-box">
-                <a class="btn-grey hoverable" href=""><span>Login</span></a>
-                <a class="btn-grey hoverable" href=""><span>Register</span></a>
-            </div>
-            <div class="d-grid">
-                <a href="" class="btn-grey hoverable">Statistics</a>
+    {{if .Logged }}
+        <div class="container d-flex full-height">
+            <div class="login-modal box">
+                <div class="logo">
+                    <span>HANG</span>
+                    <span class="ph">HUB</span>
+                </div>
+                <h1>Welcome {{.Usermane}}</h1>
+                <div class="modal-btn-box">
+                    <a class="btn-grey hoverable" href="/game"><span>Play</span></a>
+                    <a class="btn-grey hoverable" href="/stats"><span>Statistics</span></a>
+                </div>
+                <form action="/logout" class="d-grid" method="post">
+                    <button type="submit" class="btn-grey hoverable">Logout</button>
+                </form>
             </div>
         </div>
-    </div>
+    {{else}}
+        <div class="container d-flex full-height">
+            <div class="login-modal box">
+                <div class="logo">
+                    <span>HANG</span>
+                    <span class="ph">HUB</span>
+                </div>
+                <h1>Are you ready to play ?</h1>
+                <h4>Before playing you need to be logged !</h4>
 
+                <div class="modal-btn-box">
+                    <a class="btn-grey hoverable" href="/login"><span>Login</span></a>
+                    <a class="btn-grey hoverable" href="/register"><span>Register</span></a>
+                </div>
+                <div class="d-grid">
+                    <a href="/stats" class="btn-grey hoverable">Statistics</a>
+                </div>
+            </div>
+        </div>
+    {{end}}
+    
+<!-- 
     <div class="container d-flex full-height">
         <div class="login-modal box">
             <div class="logo">
@@ -138,7 +157,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </body>
 
 </html>
