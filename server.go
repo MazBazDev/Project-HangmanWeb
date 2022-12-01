@@ -22,9 +22,9 @@ var session = sessionData{}
 
 func main() {
 	http.HandleFunc("/", Routing)
-
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fmt.Println("Server started : http://127.0.0.1:8080")
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -55,7 +55,11 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 	case "/stats":
 		template.Must(template.ParseFiles("static/pages/stats.html")).Execute(w, session)
 	case "/play":
-		template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
+		if !session.Logged {
+			http.Redirect(w, request, "/", http.StatusSeeOther)
+		} else {
+			template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
+		}
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
 			session = sessionData{
@@ -101,7 +105,11 @@ func PasswordCheck(w http.ResponseWriter, request *http.Request) bool {
 func Register(w http.ResponseWriter, request *http.Request) {
 	if PasswordCheck(w, request) && !RegisterHasAccount(w, request) {
 		data := [][]string{
-			{request.FormValue("name"), request.FormValue("email"), HashPassword(request.FormValue("password"))},
+			{
+				request.FormValue("name"),
+				request.FormValue("email"),
+				HashPassword(request.FormValue("password")),
+			},
 		}
 
 		//create a file
