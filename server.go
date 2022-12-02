@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	hangman "hangman/HangMan"
 	"html/template"
 	"log"
 	"net/http"
@@ -22,7 +21,6 @@ type sessionData struct {
 var session = sessionData{}
 
 func main() {
-	hangman.Test()
 	http.HandleFunc("/", Routing)
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
