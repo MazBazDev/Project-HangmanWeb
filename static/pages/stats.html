@@ -1,35 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    {{template "head"}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HangMan | Web</title>
-    <link rel="stylesheet" href="/static/assets/css/app.css">
-</head>
-
-<body>
-    <nav>
-        <div class="logo">
-            <span>HANG</span>
-            <span class="ph">HUB</span>
-        </div>
-    </nav>
+  <body>
+    {{template "nav"}}
 
     <div class="container mt-5 text-white">
-        <h1>{{.PageTitle}}</h1>
-        <ul>
-            {{range .Todos}}
-                {{if .Done}}
-                    <li class="done">{{.Title}}</li>
-                {{else}}
-                    <li>{{.Title}}</li>
-                {{end}}
-            {{end}}
-        </ul>
+      <h1>{{.PageTitle}}</h1>
+      <ul>
+        {{range .Todos}} {{if .Done}}
+        <li class="done">{{.Title}}</li>
+        {{else}}
+        <li>{{.Title}}</li>
+        {{end}} {{end}}
+      </ul>
     </div>
-</body>
-
+  </body>
 </html>

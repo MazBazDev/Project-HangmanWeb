@@ -33,13 +33,13 @@ func main() {
 func Routing(w http.ResponseWriter, request *http.Request) {
 	switch request.URL.Path {
 	case "/":
-		template.Must(template.ParseFiles("static/pages/index.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/pages/index.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 	case "/login":
 		if session.Logged {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		} else {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/login.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/pages/login.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				Login(w, request)
 			}
@@ -49,17 +49,17 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		} else {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/register.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/pages/register.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				Register(w, request)
 			}
 		}
 	case "/stats":
-		template.Must(template.ParseFiles("static/pages/stats.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/pages/stats.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 	case "/dictionary":
 		if session.Logged && hangman.GameData.CurrentDictionaryPath == "" {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/dictionary.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/pages/dictionary.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				InitGame(w, request)
 			}
@@ -75,7 +75,7 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			}
 			if request.Method == "GET" {
 				fmt.Println(session)
-				template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/pages/game.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 
 			} else if request.Method == "POST" {
 				Play(w, request)
@@ -91,7 +91,7 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
 	default:
-		template.Must(template.ParseFiles("static/pages/error.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/pages/error.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 	}
 }
 
@@ -214,7 +214,7 @@ func InitGame(w http.ResponseWriter, request *http.Request) {
 	hangman.WordBegining(hangman.GameData.WordToFind)
 
 	session.Game = hangman.GameData
-	fmt.Println("attesm", session.Game.Attempts)
+	fmt.Println("attempts", session.Game.Attempts)
 	http.Redirect(w, request, "/hangman", http.StatusSeeOther)
 }
 

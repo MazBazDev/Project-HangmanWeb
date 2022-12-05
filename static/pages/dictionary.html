@@ -1,47 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+  {{template "head"}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HangMan | Web</title>
-    <link rel="stylesheet" href="/static/assets/css/app.css">
-</head>
-
-<body>
-    <nav>
-        <div class="logo">
-            <span>HANG</span>
-            <span class="ph">HUB</span>
-        </div>
-    </nav>
-
+  <body>
+    {{template "nav"}}
 
     <div class="container d-flex full-height">
-        <div class="login-modal box">
-            <div class="logo">
-                <span>HANG</span>
-                <span class="ph">HUB</span>
-            </div>
-            <h1>Choose u'r dictionary</h1>
-            <div class="login-box">
-                <form action="/dictionary" method="POST">
-                    <div class="user-box">
-                        <select name="level" required>
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                        </select>
-                    </div>
-                    <span class="error">{{.Error}}</span>
-                    <div class="d-grid">
-                        <button type="submit" class="btn-grey hoverable">Let's play</button>
-                    </div>
-                </form>
-            </div>
+      <div class="login-modal box">
+        <div class="logo">
+          <span>HANG</span>
+          <span class="ph">HUB</span>
         </div>
+        <h1>Choose your dictionary</h1>
+        <div class="login-box">
+          <form action="/dictionary" method="POST">
+            <div class="user-box">
+              <select name="level" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <span class="error">{{.Error}}</span>
+            <div class="d-grid">
+              <button type="submit" class="btn-grey hoverable">
+                Let's play
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>

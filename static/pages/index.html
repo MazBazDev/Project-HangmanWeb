@@ -1,61 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+  {{template "head"}}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HangMan | Web</title>
-    <link rel="stylesheet" href="/static/assets/css/app.css">
-</head>
-
-<body>
-    <nav>
+  <body>
+    {{template "nav"}} {{if .Logged }}
+    <div class="container d-flex full-height">
+      <div class="login-modal box">
         <div class="logo">
-            <span>HANG</span>
-            <span class="ph">HUB</span>
+          <span>HANG</span>
+          <span class="ph">HUB</span>
         </div>
-    </nav>
-
-    {{if .Logged }}
-        <div class="container d-flex full-height">
-            <div class="login-modal box">
-                <div class="logo">
-                    <span>HANG</span>
-                    <span class="ph">HUB</span>
-                </div>
-                <h1>Welcome {{.Usermane}}</h1>
-                <div class="modal-btn-box">
-                    <a class="btn-grey hoverable" href="/hangman"><span>Play</span></a>
-                    <a class="btn-grey hoverable" href="/stats"><span>Statistics</span></a>
-                </div>
-                <form action="/logout" class="d-grid" method="post">
-                    <button type="submit" class="btn-grey hoverable">Logout</button>
-                </form>
-            </div>
+        <h1>Welcome {{.Usermane}}</h1>
+        <div class="modal-btn-box">
+          <a class="btn-grey hoverable" href="/hangman"><span>Play</span></a>
+          <a class="btn-grey hoverable" href="/stats"
+            ><span>Statistics</span></a
+          >
         </div>
+        <form action="/logout" class="d-grid" method="post">
+          <button type="submit" class="btn-grey hoverable">Logout</button>
+        </form>
+      </div>
+    </div>
     {{else}}
-        <div class="container d-flex full-height">
-            <div class="login-modal box">
-                <div class="logo">
-                    <span>HANG</span>
-                    <span class="ph">HUB</span>
-                </div>
-                <h1>Are you ready to play ?</h1>
-                <h4>Before playing you need to be logged !</h4>
-
-                <div class="modal-btn-box">
-                    <a class="btn-grey hoverable" href="/login"><span>Login</span></a>
-                    <a class="btn-grey hoverable" href="/register"><span>Register</span></a>
-                </div>
-                <div class="d-grid">
-                    <a href="/stats" class="btn-grey hoverable">Statistics</a>
-                </div>
-            </div>
+    <div class="container d-flex full-height">
+      <div class="login-modal box">
+        <div class="logo">
+          <span>HANG</span>
+          <span class="ph">HUB</span>
         </div>
+        <h1>Are you ready to play ?</h1>
+        <h4>Before playing you need to be logged !</h4>
+
+        <div class="modal-btn-box">
+          <a class="btn-grey hoverable" href="/login"><span>Login</span></a>
+          <a class="btn-grey hoverable" href="/register"
+            ><span>Register</span></a
+          >
+        </div>
+        <div class="d-grid">
+          <a href="/stats" class="btn-grey hoverable">Statistics</a>
+        </div>
+      </div>
+    </div>
     {{end}}
-    
-<!-- 
+
+    <!-- 
     <div class="container d-flex full-height">
         <div class="login-modal box">
             <div class="logo">
@@ -158,6 +148,5 @@
             </div>
         </div>
     </div> -->
-</body>
-
+  </body>
 </html>
