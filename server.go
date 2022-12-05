@@ -5,7 +5,6 @@ import (
 	"fmt"
 	hangman "hangman/HangMan"
 	"html/template"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -90,21 +89,20 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 				template.Must(template.ParseFiles("static/pages/win.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 				session.Win++
 				hangman.GameData.CurrentDictionaryPath = ""
-				// session = sessionData{
-				// 	Game : hangman.HangmanData{
-				// 		Attempts: 10,
-
-				// 		WordToFind: hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath),
-				// 	},
-				// }
-				// session.Game = hangman.HangmanData{}
-				// hangman.GameData.Attempts = 10
-				// session.Game.WordToFind = hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath)
-				//hangman.WordBegining(hangman.GameData.WordToFind)
-			} else if hangman.GameData.Attempts == 0 && hangman.GameData.WordFinded {
-				template.Must(template.ParseFiles("static/pages/win.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				hangman.GameData.Word = ""
+				hangman.GameData.CurrentLetter = ""
+				hangman.GameData.PlayedLetters = ""
+				hangman.GameData.Attempts = 10
+				hangman.GameData.Error = ""
+			} else if hangman.GameData.Attempts == 0 && !hangman.GameData.WordFinded {
+				template.Must(template.ParseFiles("static/pages/end.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
 				session.Loose++
 				hangman.GameData.CurrentDictionaryPath = ""
+				hangman.GameData.Word = ""
+				hangman.GameData.CurrentLetter = ""
+				hangman.GameData.PlayedLetters = ""
+				hangman.GameData.Attempts = 10
+				hangman.GameData.Error = ""
 			}
 		}
 	case "/logout":
@@ -230,7 +228,6 @@ func Login(w http.ResponseWriter, request *http.Request) {
 }
 
 func InitGame(w http.ResponseWriter, request *http.Request) {
-	//faire une fonction qui rempli ma structure
 	hangman.GameData.WordFinded = false
 	hangman.GameData.WordToFind = ""
 	hangman.GameData.PaternsPath = "./HangMan/files/hangman.txt"
@@ -253,30 +250,5 @@ func Play(w http.ResponseWriter, request *http.Request) {
 		}
 		session.Game = hangman.GameData
 		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
-	}
-}
-
-func ReadCSV() {
-	// open file
-	f, err := os.Open("data.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// remember to close the file at the end of the program
-	defer f.Close()
-
-	// read csv values using csv.Reader
-	csvReader := csv.NewReader(f)
-	for {
-		rec, err := csvReader.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-		// do something with read line
-		fmt.Printf("%+v\n", rec)
 	}
 }
