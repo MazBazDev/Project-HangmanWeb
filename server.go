@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	hangman "hangman/HangMan"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ type sessionData struct {
 	Usermane string
 	Email    string
 	Error    string
+	Game     hangman.HangmanData
 }
 
 var session = sessionData{}
@@ -54,11 +56,30 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 		}
 	case "/stats":
 		template.Must(template.ParseFiles("static/pages/stats.html")).Execute(w, session)
-	case "/play":
+	case "/dictionary":
+		if session.Logged && hangman.GameData.CurrentDictionaryPath == "" {
+			if request.Method == "GET" {
+				template.Must(template.ParseFiles("static/pages/dictionary.html")).Execute(w, session)
+			} else if request.Method == "POST" {
+				InitGame(w, request)
+			}
+		} else {
+			http.Redirect(w, request, "/hangman", http.StatusSeeOther)
+		}
+	case "/hangman":
 		if !session.Logged {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		} else {
-			template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
+			if hangman.GameData.CurrentDictionaryPath == "" {
+				http.Redirect(w, request, "/dictionary", http.StatusSeeOther)
+			}
+			if request.Method == "GET" {
+				fmt.Println(session)
+				template.Must(template.ParseFiles("static/pages/game.html")).Execute(w, session)
+
+			} else if request.Method == "POST" {
+				Play(w, request)
+			}
 		}
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
@@ -174,5 +195,39 @@ func Login(w http.ResponseWriter, request *http.Request) {
 	if !session.Logged {
 		session.Error = "Bad credentials, retry or create an account"
 		http.Redirect(w, request, "/login", http.StatusSeeOther)
+	}
+}
+
+func InitGame(w http.ResponseWriter, request *http.Request) {
+	hangman.GameData.PaternsPath = "./HangMan/files/hangman.txt"
+
+	switch request.FormValue("level") {
+	case "easy":
+		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Easy.txt"
+	case "medium":
+		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Medium.txt"
+	case "hard":
+		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Hard.txt"
+	}
+	hangman.GameData.Attempts = 10
+	hangman.GameData.WordToFind = hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath)
+	hangman.WordBegining(hangman.GameData.WordToFind)
+
+	session.Game = hangman.GameData
+	fmt.Println("attesm", session.Game.Attempts)
+	http.Redirect(w, request, "/hangman", http.StatusSeeOther)
+}
+
+func Play(w http.ResponseWriter, request *http.Request) {
+	hangman.GameData.CurrentLetter = request.FormValue("letter")
+	hangman.Play()
+	if hangman.GameData.Attempts > 0 && !hangman.GameData.WordFinded {
+		if hangman.GameData.Error != "" {
+			session.Error = hangman.GameData.Error
+		}
+		session.Game = hangman.GameData
+		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
+	} else {
+		template.Must(template.ParseFiles("static/pages/end.html")).Execute(w, session)
 	}
 }
