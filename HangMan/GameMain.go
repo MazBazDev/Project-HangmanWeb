@@ -141,7 +141,7 @@ func Play() {
 // --
 // This function return a string formated from the word to find with randoms letters and underscore.
 // --
-func WordBegining(toFind string) {
+func WordBegining(toFind string) string {
 	n := len(toFind)/2 - 1
 	tabIndex := []int{}
 
@@ -165,6 +165,7 @@ func WordBegining(toFind string) {
 	for i := 0; i < len(tabIndex); i++ {
 		GameData.Word = ReplaceAtIndex(GameData.Word, toFind, tabToFind[tabIndex[i]], strings.Index(toFind, tabToFind[tabIndex[i]]))
 	}
+	return GameData.Word
 }
 
 // --

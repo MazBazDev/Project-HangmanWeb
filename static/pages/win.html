@@ -6,16 +6,15 @@
     <div class="container d-flex full-height">
       <div class="login-modal box">
         <div class="logo">
-          <span>STAT</span>
-          <span class="ph">ISTICS</span>
+          <span>YOU</span>
+          <span class="ph">WON</span>
         </div>
-        <h1>{{.Usermane}}</h1>
-        <h4>Win : {{.Win}}</h4>
-        <h4>Loose : {{.Loose}}</h4>
+        <h1>Congrats {{.Usermane}} !</h1>
         <div class="modal-btn-box">
-          <a class="btn-grey hoverable" href="/"><span>Play new game</span></a>
-          <a class="btn-grey hoverable" href="/"
-            ><span>Home</span></a>
+          <a class="btn-grey hoverable" href="/dictionary"><span>Play again</span></a>
+          <a class="btn-grey hoverable" href="/stats"
+            ><span>Statistics</span></a
+          >
         </div>
         <form action="/logout" class="d-grid" method="post">
           <button type="submit" class="btn-grey hoverable">Logout</button>

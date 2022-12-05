@@ -5,9 +5,11 @@ import (
 	"fmt"
 	hangman "hangman/HangMan"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,6 +20,10 @@ type sessionData struct {
 	Email    string
 	Error    string
 	Game     hangman.HangmanData
+	Win      int
+	Loose    int
+	//CorrectAttempts int
+	//WrongAttempts   int
 }
 
 var session = sessionData{}
@@ -80,6 +86,26 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			} else if request.Method == "POST" {
 				Play(w, request)
 			}
+			if hangman.GameData.WordFinded {
+				template.Must(template.ParseFiles("static/pages/win.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				session.Win++
+				hangman.GameData.CurrentDictionaryPath = ""
+				// session = sessionData{
+				// 	Game : hangman.HangmanData{
+				// 		Attempts: 10,
+
+				// 		WordToFind: hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath),
+				// 	},
+				// }
+				// session.Game = hangman.HangmanData{}
+				// hangman.GameData.Attempts = 10
+				// session.Game.WordToFind = hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath)
+				//hangman.WordBegining(hangman.GameData.WordToFind)
+			} else if hangman.GameData.Attempts == 0 && hangman.GameData.WordFinded {
+				template.Must(template.ParseFiles("static/pages/win.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				session.Loose++
+				hangman.GameData.CurrentDictionaryPath = ""
+			}
 		}
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
@@ -124,12 +150,17 @@ func PasswordCheck(w http.ResponseWriter, request *http.Request) bool {
 }
 
 func Register(w http.ResponseWriter, request *http.Request) {
+
 	if PasswordCheck(w, request) && !RegisterHasAccount(w, request) {
 		data := [][]string{
 			{
 				request.FormValue("name"),
 				request.FormValue("email"),
 				HashPassword(request.FormValue("password")),
+				strconv.Itoa(session.Win),
+				strconv.Itoa(session.Loose),
+				//strconv.Itoa(session.CorrectAttempts),
+				//strconv.Itoa(session.WrongAttempts),
 			},
 		}
 
@@ -199,16 +230,11 @@ func Login(w http.ResponseWriter, request *http.Request) {
 }
 
 func InitGame(w http.ResponseWriter, request *http.Request) {
+	//faire une fonction qui rempli ma structure
+	hangman.GameData.WordFinded = false
+	hangman.GameData.WordToFind = ""
 	hangman.GameData.PaternsPath = "./HangMan/files/hangman.txt"
-
-	switch request.FormValue("level") {
-	case "easy":
-		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Easy.txt"
-	case "medium":
-		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Medium.txt"
-	case "hard":
-		hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/Hard.txt"
-	}
+	hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/" + request.FormValue("level") + ".txt"
 	hangman.GameData.Attempts = 10
 	hangman.GameData.WordToFind = hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath)
 	hangman.WordBegining(hangman.GameData.WordToFind)
@@ -227,7 +253,30 @@ func Play(w http.ResponseWriter, request *http.Request) {
 		}
 		session.Game = hangman.GameData
 		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
-	} else {
-		template.Must(template.ParseFiles("static/pages/end.html")).Execute(w, session)
+	}
+}
+
+func ReadCSV() {
+	// open file
+	f, err := os.Open("data.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// remember to close the file at the end of the program
+	defer f.Close()
+
+	// read csv values using csv.Reader
+	csvReader := csv.NewReader(f)
+	for {
+		rec, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		// do something with read line
+		fmt.Printf("%+v\n", rec)
 	}
 }
