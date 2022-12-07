@@ -60,7 +60,7 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 	case "/stats":
 		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/stats.html")).Execute(w, session)
 	case "/dictionary":
-		if session.Logged && hangman.GameData.CurrentDictionaryPath == "" {
+		if session.Logged && hangman.GameData.WordToFind == "" {
 			if request.Method == "GET" {
 				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/dictionary.html")).Execute(w, session)
 			} else if request.Method == "POST" {

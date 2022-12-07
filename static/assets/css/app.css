@@ -27,9 +27,9 @@ hr {
 	color: #fff !important;
 }
 
-a:hover {
+a:hover, button:hover {
 	color: #f89102 !important;
-	transition: transform 0.25s ease-out;
+	transition: all 0.25s ease-in-out;
 }
 
 .d-flex {
@@ -114,6 +114,9 @@ a:hover {
 	transform: translate(0, -8px);
 	text-decoration: underline;
 }
+.hoverable {
+	transition: all 0.25s ease-in-out;
+}
 
 .hoverable > span {
 	display: inline-block;
@@ -129,12 +132,12 @@ a:hover {
 	height: 2px;
 	bottom: 0;
 	left: 0;
-	background-color: #fff;
+	background-color: #f89102;
 	transform-origin: bottom right;
 	transition: transform 0.25s ease-out;
 }
 
-.hoverable > span:hover::after {
+.hoverable:hover > span::after {
 	transform: scaleX(1);
 	transform-origin: bottom left;
 }
