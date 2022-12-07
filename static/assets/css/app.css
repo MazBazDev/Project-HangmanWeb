@@ -227,10 +227,10 @@ a:hover, button:hover {
 	border-radius: 5px;
 	width: 100%;
 	border: 1px solid #2e2e2e;
-	box-shadow: 0 0 20px 6px rgb(255 255 255 / 26%);
+	box-shadow: 0 0 20px 6px rgb(255 255 255 / 12%);
 	font-size: 28px;
-	background-color: #ccc;
-	color: black;
+	background-color: #1e1e1e;
+	color: rgb(97, 97, 97);
 }
 
 .playForm > input::placeholder {
@@ -238,7 +238,7 @@ a:hover, button:hover {
 }
 
 .playForm > input:focus-visible {
-	outline-color: #ff9000;
+	outline-color: #7b6b565c;
 }
 .user-box > select {
 	height: 3rem;
