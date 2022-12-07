@@ -1,35 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-  {{template "head"}}
-
-  <body>
-    {{template "nav"}}
-
-    <div class="container d-flex full-height">
-      <div class="login-modal box">
-        <div class="logo">
-          <span>HANG</span>
-          <span class="ph">HUB</span>
-        </div>
-        <h1>Choose your dictionary</h1>
-        <div class="login-box">
-          <form action="/dictionary" method="POST">
-            <div class="user-box">
-              <select name="level" required>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-            </div>
-            <span class="error">{{.Error}}</span>
-            <div class="d-grid">
-              <button type="submit" class="btn-grey hoverable">
-                Let's play
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+{{define "title"}}Home{{end}}
+{{block "content" .}}
+<div class="container d-flex full-height">
+  <div class="login-modal box">
+    <div class="logo">
+      <span>HANG</span>
+      <span class="ph">HUB</span>
     </div>
-  </body>
-</html>
+    <h1>Choose your dictionary</h1>
+    <div class="login-box">
+      <form action="/dictionary" method="POST">
+        <div class="user-box">
+          <select name="level" required>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <span class="error">{{.Error}}</span>
+        <div class="d-grid">
+          <button type="submit" class="btn-grey hoverable">
+            Let's play
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{{end}}

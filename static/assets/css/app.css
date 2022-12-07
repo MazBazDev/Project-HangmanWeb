@@ -237,7 +237,16 @@ a:hover {
 .playForm > input:focus-visible {
 	outline-color: #ff9000;
 }
-
+.user-box > select {
+	height: 3rem;
+    width: 100%;
+    text-align: center;
+    background-color: black;
+    color: white;
+    font-size: 1.3rem;
+    border-radius: 4px;
+    padding-left: 1rem;
+}
 .translate:hover {
 	transition: all 0.3s ease-in-out;
 	transform: translate(0, -4px);

@@ -1,22 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  {{template "head"}}
-
-  <body>
-    {{template "nav"}}
-
-    <div class="container d-flex full-height">
-      <div class="login-modal box">
-        <div class="logo">
-          <span>HANG</span>
-          <span class="ph">HUB</span>
-        </div>
-        <h1>Oups</h1>
-        <h4>Page not found :/</h4>
-        <div class="login-box d-grid">
-          <a href="/" class="btn-grey hoverable">Home</a>
-        </div>
-      </div>
+{{define "title"}}Home{{end}}
+{{block "content" .}}
+<div class="container d-flex full-height">
+  <div class="login-modal box">
+    <div class="logo">
+      <span>HANG</span>
+      <span class="ph">HUB</span>
     </div>
-  </body>
-</html>
+    <h1>Oups</h1>
+    <h4>Page not found :/</h4>
+    <div class="login-box d-grid">
+      <a href="/" class="btn-grey hoverable">Home</a>
+    </div>
+  </div>
+</div>
+{{end}}

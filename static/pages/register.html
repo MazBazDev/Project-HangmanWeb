@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  {{template "head"}}
-
-  <body>
-    {{template "nav"}}
-
+{{define "title"}}Home{{end}}
+{{block "content" .}}
     <div class="container d-flex full-height">
       <div class="login-modal box">
         <div class="logo">
@@ -43,5 +38,4 @@
         </div>
       </div>
     </div>
-  </body>
-</html>
+{{end}}

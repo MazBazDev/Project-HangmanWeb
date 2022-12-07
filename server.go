@@ -21,8 +21,6 @@ type sessionData struct {
 	Game     hangman.HangmanData
 	Win      int
 	Loose    int
-	//CorrectAttempts int
-	//WrongAttempts   int
 }
 
 var session = sessionData{}
@@ -38,13 +36,13 @@ func main() {
 func Routing(w http.ResponseWriter, request *http.Request) {
 	switch request.URL.Path {
 	case "/":
-		template.Must(template.ParseFiles("static/pages/index.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/index.html")).Execute(w, session)
 	case "/login":
 		if session.Logged {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		} else {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/login.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/login.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				Login(w, request)
 			}
@@ -54,17 +52,17 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		} else {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/register.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/register.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				Register(w, request)
 			}
 		}
 	case "/stats":
-		template.Must(template.ParseFiles("static/pages/stats.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/stats.html")).Execute(w, session)
 	case "/dictionary":
 		if session.Logged && hangman.GameData.CurrentDictionaryPath == "" {
 			if request.Method == "GET" {
-				template.Must(template.ParseFiles("static/pages/dictionary.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/dictionary.html")).Execute(w, session)
 			} else if request.Method == "POST" {
 				InitGame(w, request)
 			}
@@ -80,42 +78,34 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			}
 			if request.Method == "GET" {
 				fmt.Println(session)
-				template.Must(template.ParseFiles("static/pages/game.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/game.html")).Execute(w, session)
 
 			} else if request.Method == "POST" {
 				Play(w, request)
 			}
 			if hangman.GameData.WordFinded {
-				template.Must(template.ParseFiles("static/pages/win.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/win.html")).Execute(w, session)
 				session.Win++
-				hangman.GameData.CurrentDictionaryPath = ""
-				hangman.GameData.Word = ""
-				hangman.GameData.CurrentLetter = ""
-				hangman.GameData.PlayedLetters = ""
-				hangman.GameData.Attempts = 10
-				hangman.GameData.Error = ""
+				ClearGameStruct()
 			} else if hangman.GameData.Attempts == 0 && !hangman.GameData.WordFinded {
-				template.Must(template.ParseFiles("static/pages/end.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/end.html")).Execute(w, session)
 				session.Loose++
-				hangman.GameData.CurrentDictionaryPath = ""
-				hangman.GameData.Word = ""
-				hangman.GameData.CurrentLetter = ""
-				hangman.GameData.PlayedLetters = ""
-				hangman.GameData.Attempts = 10
-				hangman.GameData.Error = ""
+				ClearGameStruct()
 			}
 		}
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
+			ClearGameStruct()
 			session = sessionData{
 				Logged:   false,
 				Usermane: "",
 				Email:    "",
+				Game:     hangman.HangmanData{},
 			}
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
 	default:
-		template.Must(template.ParseFiles("static/pages/error.html", "static/templates/nav.html", "static/templates/head.html")).Execute(w, session)
+		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/error.html")).Execute(w, session)
 	}
 }
 
@@ -157,8 +147,6 @@ func Register(w http.ResponseWriter, request *http.Request) {
 				HashPassword(request.FormValue("password")),
 				strconv.Itoa(session.Win),
 				strconv.Itoa(session.Loose),
-				//strconv.Itoa(session.CorrectAttempts),
-				//strconv.Itoa(session.WrongAttempts),
 			},
 		}
 
@@ -228,11 +216,14 @@ func Login(w http.ResponseWriter, request *http.Request) {
 }
 
 func InitGame(w http.ResponseWriter, request *http.Request) {
-	hangman.GameData.WordFinded = false
-	hangman.GameData.WordToFind = ""
-	hangman.GameData.PaternsPath = "./HangMan/files/hangman.txt"
-	hangman.GameData.CurrentDictionaryPath = "./HangMan/files/dictionary/" + request.FormValue("level") + ".txt"
-	hangman.GameData.Attempts = 10
+
+	hangman.GameData = hangman.HangmanData{
+		WordFinded:            false,
+		WordToFind:            "",
+		PaternsPath:           "./HangMan/files/hangman.txt",
+		CurrentDictionaryPath: "./HangMan/files/dictionary/" + request.FormValue("level") + ".txt",
+		Attempts:              10,
+	}
 	hangman.GameData.WordToFind = hangman.GetRandomWord(hangman.GameData.CurrentDictionaryPath)
 	hangman.WordBegining(hangman.GameData.WordToFind)
 
@@ -251,4 +242,16 @@ func Play(w http.ResponseWriter, request *http.Request) {
 		session.Game = hangman.GameData
 		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
 	}
+}
+
+func ClearGameStruct() {
+	hangman.GameData = hangman.HangmanData{
+		CurrentDictionaryPath: "",
+		Word:                  "",
+		CurrentLetter:         "",
+		PlayedLetters:         "",
+		Attempts:              10,
+		Error:                 "",
+	}
+	session.Error = ""
 }
