@@ -13,6 +13,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type oldData struct {
+	Attemps    int
+	WordToFind string
+	Word       string
+}
 type sessionData struct {
 	Logged   bool
 	Usermane string
@@ -21,6 +26,7 @@ type sessionData struct {
 	Game     hangman.HangmanData
 	Win      int
 	Loose    int
+	OldDatas oldData
 }
 
 var session = sessionData{}
@@ -76,23 +82,18 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 			if hangman.GameData.CurrentDictionaryPath == "" {
 				http.Redirect(w, request, "/dictionary", http.StatusSeeOther)
 			}
+
 			if request.Method == "GET" {
-				fmt.Println(session)
 				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/game.html")).Execute(w, session)
 
 			} else if request.Method == "POST" {
 				Play(w, request)
 			}
-			if hangman.GameData.WordFinded {
-				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/win.html")).Execute(w, session)
-				session.Win++
-				ClearGameStruct()
-			} else if hangman.GameData.Attempts == 0 && !hangman.GameData.WordFinded {
-				template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/end.html")).Execute(w, session)
-				session.Loose++
-				ClearGameStruct()
-			}
 		}
+	case "/win":
+		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/win.html")).Execute(w, session)
+	case "/loose":
+		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/loose.html")).Execute(w, session)
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
 			ClearGameStruct()
@@ -228,18 +229,28 @@ func InitGame(w http.ResponseWriter, request *http.Request) {
 	hangman.WordBegining(hangman.GameData.WordToFind)
 
 	session.Game = hangman.GameData
-	fmt.Println("attempts", session.Game.Attempts)
 	http.Redirect(w, request, "/hangman", http.StatusSeeOther)
 }
 
 func Play(w http.ResponseWriter, request *http.Request) {
 	hangman.GameData.CurrentLetter = request.FormValue("letter")
 	hangman.Play()
-	if hangman.GameData.Attempts > 0 && !hangman.GameData.WordFinded {
-		if hangman.GameData.Error != "" {
-			session.Error = hangman.GameData.Error
-		}
-		session.Game = hangman.GameData
+
+	session.OldDatas = oldData{
+		Attemps:    session.Game.Attempts,
+		WordToFind: hangman.GameData.WordToFind,
+		Word:       hangman.GameData.Word,
+	}
+
+	session.Game = hangman.GameData
+
+	if hangman.GameData.WordFinded {
+		http.Redirect(w, request, "/win", http.StatusSeeOther)
+		session.Win++
+	} else if hangman.GameData.Attempts <= 0 && !hangman.GameData.WordFinded {
+		http.Redirect(w, request, "/loose", http.StatusSeeOther)
+		session.Loose++
+	} else {
 		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
 	}
 }
