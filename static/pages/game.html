@@ -1,9 +1,9 @@
-{{define "title"}}Home{{end}}
+{{define "title"}}Let's play{{end}}
 {{block "content" .}}
 <div class="container mt-5">
   <div class="row">
     <div class="col-md-8 mb-3">
-      <div class="box text-center p-3">
+      <div class="box text-center p-3 mb-3">
         <p class="letters">{{.Game.Word}}</p>
         <hr />
         <h4 class="text-white"></h4>
@@ -15,6 +15,11 @@
         </form>
         <span class="error mt-2">{{.Error}}</span>
       </div>
+      <div>
+        {{range .Scoreboard}}
+            <p>{{ .Name }} {{ .Win }} {{ .Loose }}</p>
+        {{end}}
+      </div>
     </div>
     <div class="col-md-4">
       <div class="box p-3 mb-3 text-center">
@@ -24,7 +29,7 @@
       </div>
       <div class="box p-3 mb-3">
         <h2 class="text-center text-white">
-          Attemps left : {{.Game.Attempts}}
+          Attempts left : {{.Game.Attempts}}
         </h2>
         <hr />
         <svg class="hangman" viewBox="0 0 96 96">

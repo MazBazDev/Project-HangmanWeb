@@ -23,6 +23,38 @@ nav {
 	padding: 5px;
 }
 
+#nav {
+	display: flex;
+	justify-content: space-around;
+}
+#nav .btn-grey {
+	font-size: 1.2rem;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	margin: auto;
+	background-color: #3b3939;
+}
+
+#nav .btn-grey:hover {
+	transform: translate(0, 0);
+}
+
+#nav form {
+	display: flex;
+}
+nav  .col-md-8 {
+	margin-bottom: 0.4rem;
+	display: flex;
+	justify-content: center;
+}
+
+nav a {
+	text-decoration: none;
+	color: currentColor;
+}
+
 hr {
 	color: #fff !important;
 }
@@ -98,6 +130,7 @@ a:hover, button:hover {
 }
 
 .btn-grey {
+	white-space:nowrap;
 	margin-top: 1rem;
 	text-decoration: none;
 	font-size: 1.25rem;
@@ -230,11 +263,11 @@ a:hover, button:hover {
 	box-shadow: 0 0 20px 6px rgb(255 255 255 / 12%);
 	font-size: 28px;
 	background-color: #1e1e1e;
-	color: rgb(97, 97, 97);
+	color: rgb(237 237 237);;
 }
 
 .playForm > input::placeholder {
-	color: rgb(62, 62, 62);
+	color: rgb(97, 97, 97);
 }
 
 .playForm > input:focus-visible {
@@ -255,7 +288,6 @@ a:hover, button:hover {
 	transform: translate(0, -4px);
 	box-shadow: 0 0 20px 6px rgb(255 255 255 / 26%);
 }
-
 .my-2 {
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
@@ -315,15 +347,14 @@ a:hover, button:hover {
 	display: flex;
 	flex-wrap: wrap;
 	margin-top: 3rem;
-	margin-right: calc(-0.5 * 1.5rem);
-	margin-left: calc(-0.5 * 1.5rem);
+	margin-right: -0.75rem;
+	margin-left: -0.75rem;
 }
 .row > * {
-	flex-shrink: 0;
 	width: 100%;
 	max-width: 100%;
-	padding-right: calc(1.5rem * 0.5);
-	padding-left: calc(1.5rem * 0.5);
+	padding-right: 0.75rem;
+	padding-left: 0.75rem;
 	margin-top: 0;
 }
 
@@ -336,5 +367,9 @@ a:hover, button:hover {
 	.col-md-8 {
 		flex: 0 0 auto;
 		width: 66.66666667%;
+	}
+
+	nav  .col-md-8 {
+		margin-bottom: 0.4rem;
 	}
 }

@@ -1,4 +1,4 @@
-{{define "title"}}Home{{end}}
+{{define "title"}}Statistics{{end}}
 {{block "content" .}}
 <div class="container d-flex full-height">
   <div class="login-modal box">
@@ -7,10 +7,10 @@
       <span class="ph">ISTICS</span>
     </div>
 
-    {{if .Logged }}
     <h1>{{.Usermane}}</h1>
-    <h4>Win : {{.Win}}</h4>
-    <h4>Loose : {{.Loose}}</h4>
+    <p class="btn-grey">Win : {{.Win}}</p>
+    <p class="btn-grey">Lost : {{.Loose}}</p>
+    <p class="btn-grey">Played : {{.Played}}</p>
     <div class="modal-btn-box">
       <a class="btn-grey hoverable" href="/dictionary"><span>Play new game</span></a>
       <a class="btn-grey hoverable" href="/"><span>Home</span></a>
@@ -19,13 +19,5 @@
       <button type="submit" class="btn-grey hoverable">Logout</button>
     </form>
   </div>
-
-  {{else}}
-  <h4>You need to login to see your statistics.</h4>
-  <div class="modal-btn-box">
-    <a class="btn-grey hoverable" href="/login"><span>Login</span></a>
-    <a class="btn-grey hoverable" href="/"><span>Home</span></a>
-  </div>
-  {{end}}
 </div>
 {{end}}

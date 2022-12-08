@@ -5,10 +5,12 @@ import (
 	"fmt"
 	hangman "hangman/HangMan"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -19,24 +21,34 @@ type oldData struct {
 	Word       string
 }
 type sessionData struct {
-	Logged   bool
-	Usermane string
-	Email    string
-	Error    string
-	Game     hangman.HangmanData
-	Win      int
-	Loose    int
-	OldDatas oldData
+	Logged     bool
+	Usermane   string
+	Email      string
+	Win        int
+	Loose      int
+	Played     int
+	Error      string
+	Game       hangman.HangmanData
+	OldDatas   oldData
+	Scoreboard []ScorePlayer
+}
+
+type ScorePlayer struct {
+	Name  string
+	Win   int
+	loose int
 }
 
 var session = sessionData{}
 
 func main() {
+	Scoreboard()
 	http.HandleFunc("/", Routing)
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	fmt.Println("Server started : http://127.0.0.1:8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Server started : http://127.0.0.1:5050")
+	http.ListenAndServe(":5050", nil)
+	// Penser a remettre le serveur en 8080
 }
 
 func Routing(w http.ResponseWriter, request *http.Request) {
@@ -94,6 +106,11 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/win.html")).Execute(w, session)
 	case "/loose":
 		template.Must(template.ParseFiles("static/templates/layout.html", "static/pages/loose.html")).Execute(w, session)
+	case "/endGame":
+		if request.Method == "POST" && session.Logged {
+			ClearGameStruct()
+		}
+		http.Redirect(w, request, "/", http.StatusSeeOther)
 	case "/logout":
 		if request.Method == "POST" && session.Logged {
 			ClearGameStruct()
@@ -113,7 +130,7 @@ func Routing(w http.ResponseWriter, request *http.Request) {
 func RegisterHasAccount(w http.ResponseWriter, request *http.Request) bool {
 	file, err := os.Open("data/accounts.csv")
 	if err != nil {
-		fmt.Println(err)
+		Log("Function: RegisterHasAccount", err)
 	}
 	reader := csv.NewReader(file)
 	records, _ := reader.ReadAll()
@@ -148,16 +165,16 @@ func Register(w http.ResponseWriter, request *http.Request) {
 				HashPassword(request.FormValue("password")),
 				strconv.Itoa(session.Win),
 				strconv.Itoa(session.Loose),
+				strconv.Itoa(session.Played),
 			},
 		}
 
-		//create a file
 		csvFile, err := os.OpenFile("data/accounts.csv", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 
 		if err != nil {
-			log.Fatalf("Failed to create file,: %", err)
+			Log("Func Register", err)
 		}
-		//initialize csv writer
+
 		csvWriter := csv.NewWriter(csvFile)
 		for _, value := range data {
 			csvWriter.Write(value)
@@ -194,17 +211,19 @@ func CheckPasswordHash(password, hash string) bool {
 func Login(w http.ResponseWriter, request *http.Request) {
 	file, err := os.Open("data/accounts.csv")
 	if err != nil {
-		fmt.Println(err)
+		Log("Func Login", err)
 	}
 	reader := csv.NewReader(file)
 	records, _ := reader.ReadAll()
 
 	for _, line := range records {
 		if line[1] == request.FormValue("email") && CheckPasswordHash(request.FormValue("password"), line[2]) {
+			played, _ := strconv.Atoi(line[5])
 			session = sessionData{
 				Logged:   true,
 				Usermane: line[0],
 				Email:    line[1],
+				Played:   played,
 			}
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
@@ -217,7 +236,6 @@ func Login(w http.ResponseWriter, request *http.Request) {
 }
 
 func InitGame(w http.ResponseWriter, request *http.Request) {
-
 	hangman.GameData = hangman.HangmanData{
 		WordFinded:            false,
 		WordToFind:            "",
@@ -236,23 +254,39 @@ func Play(w http.ResponseWriter, request *http.Request) {
 	hangman.GameData.CurrentLetter = request.FormValue("letter")
 	hangman.Play()
 
-	session.OldDatas = oldData{
-		Attemps:    session.Game.Attempts,
-		WordToFind: hangman.GameData.WordToFind,
-		Word:       hangman.GameData.Word,
+	if hangman.GameData.Error != "" {
+		session.Error = hangman.GameData.Error
 	}
 
 	session.Game = hangman.GameData
 
 	if hangman.GameData.WordFinded {
-		http.Redirect(w, request, "/win", http.StatusSeeOther)
 		session.Win++
+		session.Played++
+		UpdateStats()
+		SetOldDatas()
+
+		http.Redirect(w, request, "/win", http.StatusSeeOther)
+
 	} else if hangman.GameData.Attempts <= 0 && !hangman.GameData.WordFinded {
-		http.Redirect(w, request, "/loose", http.StatusSeeOther)
 		session.Loose++
+		session.Played++
+		UpdateStats()
+		SetOldDatas()
+
+		http.Redirect(w, request, "/loose", http.StatusSeeOther)
 	} else {
 		http.Redirect(w, request, "/hangman", http.StatusSeeOther)
 	}
+}
+
+func SetOldDatas() {
+	session.OldDatas = oldData{
+		Attemps:    session.Game.Attempts,
+		WordToFind: hangman.GameData.WordToFind,
+		Word:       hangman.GameData.Word,
+	}
+	ClearGameStruct()
 }
 
 func ClearGameStruct() {
@@ -265,4 +299,67 @@ func ClearGameStruct() {
 		Error:                 "",
 	}
 	session.Error = ""
+	session.Game = hangman.GameData
+}
+
+func Log(Error string, err1 error) {
+	f, err := os.OpenFile("./data/latest.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatalf("Log error opening file: %v", err)
+	}
+
+	defer f.Close()
+	wrt := io.MultiWriter(os.Stdout, f)
+	log.SetOutput(wrt)
+	log.Println(Error, err1, "-------------")
+}
+
+func UpdateStats() {
+	var newData string
+
+	file, err := os.Open("data/accounts.csv")
+	if err != nil {
+		Log("Func Login", err)
+	}
+	reader := csv.NewReader(file)
+	records, _ := reader.ReadAll()
+
+	for index, line := range records {
+		if strings.Compare(line[1], "aze@aze.aze") == 0 {
+			var newData []string = []string{line[0], line[1], line[2], strconv.Itoa(session.Win), strconv.Itoa(session.Loose), strconv.Itoa(session.Played)}
+			records[index] = newData
+		}
+	}
+
+	csvFile, err := os.OpenFile("data/accounts.csv", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+
+	if err != nil {
+		Log("Func Register", err)
+	}
+	for _, line := range records {
+		newData = newData + "\n" + strings.Join(line, ",")
+	}
+	os.WriteFile("data/accounts.csv", []byte(newData), 0644)
+
+	csvFile.Close()
+
+}
+
+func Scoreboard() {
+	file, err := os.Open("data/accounts.csv")
+	if err != nil {
+		Log("Func Login", err)
+	}
+	reader := csv.NewReader(file)
+	records, _ := reader.ReadAll()
+	for _, line := range records {
+		twin, _ := strconv.Atoi(line[3])
+		tloose, _ := strconv.Atoi(line[4])
+		session.Scoreboard = append(session.Scoreboard, ScorePlayer{
+			Name:  line[0],
+			Win:   twin,
+			loose: tloose,
+		})
+	}
+	session = sessionData{}
 }

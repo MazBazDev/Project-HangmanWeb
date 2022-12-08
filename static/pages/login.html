@@ -1,4 +1,4 @@
-{{define "title"}}Home{{end}}
+{{define "title"}}Login{{end}}
 {{block "content" .}}
 <div class="container d-flex full-height">
   <div class="login-modal box">
@@ -21,11 +21,13 @@
           <label>Password</label>
         </div>
         <span class="error">{{.Error}}</span>
-        <div class="d-grid">
+        <div class="d-grid mb-3">
           <button type="submit" href="" class="btn-grey hoverable">
-            Login
+            <span>Login</span>
           </button>
         </div>
+        <a href="/register" style="color: #fff;">Create new account !</a>
+
       </form>
     </div>
   </div>
