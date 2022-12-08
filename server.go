@@ -46,9 +46,8 @@ func main() {
 	http.HandleFunc("/", Routing)
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	fmt.Println("Server started : http://127.0.0.1:5050")
-	http.ListenAndServe(":5050", nil)
-	// Penser a remettre le serveur en 8080
+	fmt.Println("Server started : http://127.0.0.1:8080")
+	http.ListenAndServe(":8080", nil)
 }
 
 func Routing(w http.ResponseWriter, request *http.Request) {
@@ -158,6 +157,7 @@ func PasswordCheck(w http.ResponseWriter, request *http.Request) bool {
 func Register(w http.ResponseWriter, request *http.Request) {
 
 	if PasswordCheck(w, request) && !RegisterHasAccount(w, request) {
+		var newData string
 		data := [][]string{
 			{
 				request.FormValue("name"),
@@ -168,20 +168,21 @@ func Register(w http.ResponseWriter, request *http.Request) {
 				strconv.Itoa(session.Played),
 			},
 		}
-
-		csvFile, err := os.OpenFile("data/accounts.csv", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
-
+		file, err := os.Open("data/accounts.csv")
 		if err != nil {
 			Log("Func Register", err)
 		}
+		reader := csv.NewReader(file)
+		records, _ := reader.ReadAll()
 
-		csvWriter := csv.NewWriter(csvFile)
-		for _, value := range data {
-			csvWriter.Write(value)
+		records = append(records, data[0])
+		newData = strings.Join(records[0], ",")
+		count := 1
+		for count < len(records) {
+			newData = newData + "\n" + strings.Join(records[count], ",")
+			count++
 		}
-
-		csvWriter.Flush()
-		csvFile.Close()
+		os.WriteFile("data/accounts.csv", []byte(newData), 0644)
 
 		session = sessionData{
 			Logged:   true,
@@ -325,7 +326,7 @@ func UpdateStats() {
 	records, _ := reader.ReadAll()
 
 	for index, line := range records {
-		if strings.Compare(line[1], "aze@aze.aze") == 0 {
+		if strings.Compare(line[1], session.Email) == 0 {
 			var newData []string = []string{line[0], line[1], line[2], strconv.Itoa(session.Win), strconv.Itoa(session.Loose), strconv.Itoa(session.Played)}
 			records[index] = newData
 		}
@@ -336,9 +337,13 @@ func UpdateStats() {
 	if err != nil {
 		Log("Func Register", err)
 	}
-	for _, line := range records {
-		newData = newData + "\n" + strings.Join(line, ",")
+	newData = strings.Join(records[0], ",")
+	count := 1
+	for count < len(records) {
+		newData = newData + "\n" + strings.Join(records[count], ",")
+		count++
 	}
+
 	os.WriteFile("data/accounts.csv", []byte(newData), 0644)
 
 	csvFile.Close()
