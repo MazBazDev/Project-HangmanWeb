@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HangMan Web | {{template "title" .}}</title>
     <link rel="stylesheet" href="/static/assets/css/app.css" />
-</head>
+  </head>
 
-<body>
+  <body>
     <nav>
-        <div class="container">
-            <div class="row" style="margin-top: 0;">
-                <div class="col-md-8">
-                    <a href="/">
-                        <div class="logo">
-                            <span>HANG</span>
-                            <span class="ph">HUB</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-4" id="nav">
-                    {{if .Logged}}
-                        <form action="/logout" method="post">
-                            <button type="submit" class="btn-grey hoverable"><span>Logout</span></button>
-                        </form>
-                    {{end}}
-
-                    {{if ne .Game.WordToFind ""}}
-                        <form action="/endGame" method="post">
-                            <button class="btn-grey hoverable" type="submit"><span>Stop Game</span></button>
-                        </form>
-                    {{end}}
-                </div>
-            </div>
+      <div class="container">
+        <div class="row" style="margin-top: 0">
+          <div class="col-md-8">
+            <a href="/">
+              <div class="logo">
+                <span>HANG</span>
+                <span class="ph">MAN</span>
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4" id="nav">
+            {{if .Logged}}
+            <form action="/logout" method="post">
+              <button type="submit" class="btn-grey hoverable">
+                <span>Logout</span>
+              </button>
+            </form>
+            {{end}} {{if ne .Game.WordToFind ""}}
+            <form action="/endGame" method="post">
+              <button class="btn-grey hoverable" type="submit">
+                <span>Stop Game</span>
+              </button>
+            </form>
+            {{end}}
+          </div>
         </div>
+      </div>
     </nav>
     {{template "content" .}}
-</body>
-
+  </body>
 </html>

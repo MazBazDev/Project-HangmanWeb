@@ -27,6 +27,7 @@ type sessionData struct {
 	Win        int
 	Loose      int
 	Played     int
+	Ratio      int
 	Error      string
 	Game       hangman.HangmanData
 	OldDatas   oldData
@@ -46,8 +47,8 @@ func main() {
 	http.HandleFunc("/", Routing)
 	fs := http.FileServer(http.Dir("static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	fmt.Println("Server started : http://127.0.0.1:8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Server started : http://127.0.0.1:8090")
+	http.ListenAndServe(":8090", nil)
 }
 
 func Routing(w http.ResponseWriter, request *http.Request) {
@@ -166,6 +167,7 @@ func Register(w http.ResponseWriter, request *http.Request) {
 				strconv.Itoa(session.Win),
 				strconv.Itoa(session.Loose),
 				strconv.Itoa(session.Played),
+				strconv.Itoa(session.Ratio),
 			},
 		}
 		file, err := os.Open("data/accounts.csv")
@@ -219,12 +221,18 @@ func Login(w http.ResponseWriter, request *http.Request) {
 
 	for _, line := range records {
 		if line[1] == request.FormValue("email") && CheckPasswordHash(request.FormValue("password"), line[2]) {
+			win, _ := strconv.Atoi(line[3])
+			loose, _ := strconv.Atoi(line[4])
 			played, _ := strconv.Atoi(line[5])
+			ratio, _ := strconv.Atoi(line[6])
 			session = sessionData{
 				Logged:   true,
 				Usermane: line[0],
 				Email:    line[1],
 				Played:   played,
+				Win:      win,
+				Loose:    loose,
+				Ratio:    ratio,
 			}
 			http.Redirect(w, request, "/", http.StatusSeeOther)
 		}
@@ -318,6 +326,12 @@ func Log(Error string, err1 error) {
 func UpdateStats() {
 	var newData string
 
+	if session.Loose != 0 && session.Win != 0 {
+		session.Ratio = (session.Win * 100) / session.Loose
+	} else {
+		session.Ratio = 0
+	}
+
 	file, err := os.Open("data/accounts.csv")
 	if err != nil {
 		Log("Func Login", err)
@@ -327,7 +341,7 @@ func UpdateStats() {
 
 	for index, line := range records {
 		if strings.Compare(line[1], session.Email) == 0 {
-			var newData []string = []string{line[0], line[1], line[2], strconv.Itoa(session.Win), strconv.Itoa(session.Loose), strconv.Itoa(session.Played)}
+			var newData []string = []string{line[0], line[1], line[2], strconv.Itoa(session.Win), strconv.Itoa(session.Loose), strconv.Itoa(session.Played), strconv.Itoa(session.Ratio)}
 			records[index] = newData
 		}
 	}

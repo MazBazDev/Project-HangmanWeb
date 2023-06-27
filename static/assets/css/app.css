@@ -60,7 +60,7 @@ hr {
 }
 
 a:hover, button:hover {
-	color: #f89102 !important;
+	color: #960421 !important;
 	transition: all 0.25s ease-in-out;
 }
 
@@ -93,7 +93,7 @@ a:hover, button:hover {
 
 .logo > .ph {
 	color: #1b1b1b;
-	background-color: #ff9000;
+	background-color: #960421; 
 	padding: 6px;
 	border-radius: 6px;
 	font-weight: 600;
@@ -126,7 +126,7 @@ a:hover, button:hover {
 }
 
 .error {
-	color: #f89102;
+	color: #960421;
 }
 
 .btn-grey {
@@ -165,7 +165,7 @@ a:hover, button:hover {
 	height: 2px;
 	bottom: 0;
 	left: 0;
-	background-color: #f89102;
+	background-color: #960421;
 	transform-origin: bottom right;
 	transition: transform 0.25s ease-out;
 }
@@ -213,7 +213,7 @@ a:hover, button:hover {
 .login-box .user-box input:valid ~ label {
 	top: -20px;
 	left: 0;
-	color: #f89102;
+	color: #960421;
 	font-size: 12px;
 }
 
@@ -226,7 +226,7 @@ a:hover, button:hover {
 	transition: 0.25s;
 }
 .selected {
-	stroke: #f89102;
+	stroke: #960421;
 	display: grid;
 }
 

@@ -1,5 +1,4 @@
-{{define "title"}}Statistics{{end}}
-{{block "content" .}}
+{{define "title"}}Statistics{{end}} {{block "content" .}}
 <div class="container d-flex full-height">
   <div class="login-modal box">
     <div class="logo">
@@ -11,8 +10,11 @@
     <p class="btn-grey">Win : {{.Win}}</p>
     <p class="btn-grey">Lost : {{.Loose}}</p>
     <p class="btn-grey">Played : {{.Played}}</p>
+    <p class="btn-grey">Ratio : {{.Ratio}}</p>
     <div class="modal-btn-box">
-      <a class="btn-grey hoverable" href="/dictionary"><span>Play new game</span></a>
+      <a class="btn-grey hoverable" href="/dictionary"
+        ><span>Play new game</span></a
+      >
       <a class="btn-grey hoverable" href="/"><span>Home</span></a>
     </div>
     <form action="/logout" class="d-grid" method="post">
